@@ -42,13 +42,14 @@ class InteractiveClient:
         print("🌟 CLOUD STORAGE INTERACTIVE CLIENT")
         print("="*60)
         print("1. 📤 Upload a file")
-        print("2. 📥 Download a file")
+        print("2. 📥 Download a file by ID")
         print("3. 📝 Create test file")
         print("4. 📊 Show node statistics")
         print("5. 🔄 Upload multiple files concurrently")
         print("6. 📋 List local files")
-        print("7. 🧪 Run quick test")
-        print("8. ❌ Exit")
+        print("7. 📂 List available files (from all nodes)")
+        print("8. 🧪 Run quick test")
+        print("9. ❌ Exit")
         print("-" * 60)
     
     def create_test_file(self):
@@ -126,21 +127,29 @@ class InteractiveClient:
     
     def download_file(self):
         """Download a file interactively"""
-        print("\n📥 Download File")
-        print("-" * 20)
-        
-        file_id = input("Enter file ID to download: ").strip()
+        print("\n📥 Download File by ID")
+        print("-" * 25)
+
+        # First show available files
+        print("📂 Available files:")
+        files = self.node.list_available_files()
+
+        if not files:
+            print("❌ No files available for download")
+            return
+
+        file_id = input("\nEnter file ID to download: ").strip()
         if not file_id:
             print("❌ File ID is required")
             return
-        
-        save_path = input("Enter save path (optional): ").strip()
-        if not save_path:
-            save_path = None
-        
+
+        save_name = input("Enter save name (optional): ").strip()
+        if not save_name:
+            save_name = None
+
         print(f"\n🚀 Starting download...")
-        success = self.node.download_file_from_controller(file_id, save_path)
-        
+        success = self.node.download_file_by_id(file_id, save_name)
+
         if success:
             print("🎉 Download completed successfully!")
         else:
@@ -244,7 +253,20 @@ class InteractiveClient:
                 print("📭 No files found in storage directory")
         else:
             print("📭 Storage directory not found")
-    
+
+    def list_available_files(self):
+        """List all available files from all nodes"""
+        print("\n📂 Available Files from All Nodes")
+        print("-" * 35)
+
+        files = self.node.list_available_files()
+
+        if files:
+            print(f"\n💡 You can download any of these files using option 2")
+            print("   Just copy the file ID and use the download option")
+        else:
+            print("📭 No files available from any connected nodes")
+
     def run_quick_test(self):
         """Run a quick test of the system"""
         print("\n🧪 Quick Test")
@@ -274,8 +296,8 @@ class InteractiveClient:
         try:
             while True:
                 self.show_menu()
-                choice = input("Enter your choice (1-8): ").strip()
-                
+                choice = input("Enter your choice (1-9): ").strip()
+
                 if choice == '1':
                     self.upload_file()
                 elif choice == '2':
@@ -289,8 +311,10 @@ class InteractiveClient:
                 elif choice == '6':
                     self.list_local_files()
                 elif choice == '7':
-                    self.run_quick_test()
+                    self.list_available_files()
                 elif choice == '8':
+                    self.run_quick_test()
+                elif choice == '9':
                     print("👋 Goodbye!")
                     break
                 else:

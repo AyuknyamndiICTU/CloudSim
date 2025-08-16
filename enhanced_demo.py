@@ -15,6 +15,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from nodes.enhanced_storage_node import EnhancedStorageNode
 from core import clock_manager, metrics_collector, performance_reporter
+from statistics_manager import stats_manager
 
 
 class EnhancedCloudDemo:
@@ -324,6 +325,24 @@ class EnhancedCloudDemo:
             print(f"   💾 System Memory: {metrics_summary['system']['memory_percent']:.1f}%")
             print(f"   📊 Active Transfers: {metrics_summary['transfers']['active_count']}")
             print(f"   ✅ Completed Transfers: {metrics_summary['transfers']['completed_count']}")
+
+            # Statistics manager summary
+            print(f"\n📈 TRANSFER STATISTICS:")
+            print(f"   📁 Total Files Transferred: {stats_manager.total_files_transferred}")
+            print(f"   📊 Total Data Transferred: {stats_manager.format_size(stats_manager.total_data_transferred)}")
+            print(f"   🔄 Active Transfers: {len(stats_manager.active_transfers)}")
+            print(f"   📋 Transfer History: {len(stats_manager.transfer_history)} completed")
+
+            # Node summaries
+            print(f"\n🖥️  NODE SUMMARIES:")
+            for node in self.nodes:
+                summary = stats_manager.generate_node_summary(
+                    node.node_id,
+                    node.storage_capacity,
+                    len(stats_manager.active_transfers),
+                    node.node_stats['files_uploaded']
+                )
+                print(summary)
             
             print("\n🎉 ENHANCED DEMONSTRATION COMPLETED SUCCESSFULLY!")
             print("✨ Features Successfully Demonstrated:")

@@ -256,58 +256,56 @@ class ClockManager:
         }
     
     def generate_timing_report(self) -> str:
-        """Generate comprehensive timing report"""
+        """Generate essential timing report"""
         report = []
-        report.append("⏱️  COMPREHENSIVE TIMING REPORT")
-        report.append("=" * 50)
-        
+        report.append("⏱️  PERFORMANCE SUMMARY")
+        report.append("=" * 40)
+
         # System uptime
         uptime = self.get_system_uptime()
-        report.append(f"🕐 System Uptime: {uptime['uptime_seconds']:.2f}s")
-        report.append("")
-        
-        # Operation statistics
-        report.append("📊 OPERATION STATISTICS")
-        report.append("-" * 30)
-        
+        report.append(f"🕐 System Uptime: {uptime['uptime_seconds']:.1f}s")
+
+        # Key performance metrics only
         with self.lock:
-            for op_name, stats in self.operation_stats.items():
-                report.append(f"🔧 {op_name}:")
-                report.append(f"   📈 Calls: {stats.total_calls}")
-                report.append(f"   ⏱️  Avg: {stats.avg_duration:.4f}s")
-                report.append(f"   ⚡ Min: {stats.min_duration:.4f}s")
-                report.append(f"   🐌 Max: {stats.max_duration:.4f}s")
-                report.append(f"   📊 Total: {stats.total_duration:.4f}s")
-                report.append("")
-        
-        # Network latency statistics
-        report.append("🌐 NETWORK LATENCY STATISTICS")
-        report.append("-" * 35)
-        
-        for peer_id in self.network_latencies:
-            stats = self.get_network_latency_stats(peer_id)
-            if stats:
-                report.append(f"🖥️  {peer_id}:")
-                report.append(f"   📊 Samples: {stats['count']}")
-                report.append(f"   ⏱️  Avg: {stats['avg_latency']*1000:.2f}ms")
-                report.append(f"   ⚡ Min: {stats['min_latency']*1000:.2f}ms")
-                report.append(f"   🐌 Max: {stats['max_latency']*1000:.2f}ms")
-                report.append("")
-        
-        # File operation statistics
-        report.append("📁 FILE OPERATION STATISTICS")
-        report.append("-" * 32)
-        
-        for op_type in self.file_operation_times:
-            stats = self.get_file_operation_stats(op_type)
-            if stats:
-                report.append(f"📄 {op_type}:")
-                report.append(f"   📈 Operations: {stats['count']}")
-                report.append(f"   ⏱️  Avg: {stats['avg_time']:.4f}s")
-                report.append(f"   ⚡ Min: {stats['min_time']:.4f}s")
-                report.append(f"   🐌 Max: {stats['max_time']:.4f}s")
-                report.append("")
-        
+            # Count file operations
+            file_ops = [op for op in self.operation_stats.keys() if 'file_upload' in op]
+            total_file_ops = len(file_ops)
+
+            if total_file_ops > 0:
+                # Calculate average file upload time
+                upload_times = [self.operation_stats[op].avg_duration for op in file_ops]
+                avg_upload_time = sum(upload_times) / len(upload_times)
+                report.append(f"📤 File Uploads: {total_file_ops} completed")
+                report.append(f"⚡ Avg Upload Time: {avg_upload_time:.2f}s")
+
+            # Network performance summary
+            if self.network_latencies:
+                total_latency_samples = sum(len(latencies) for latencies in self.network_latencies.values())
+                report.append(f"🌐 Network Samples: {total_latency_samples}")
+
+                # Calculate overall average latency
+                all_latencies = []
+                for latencies in self.network_latencies.values():
+                    all_latencies.extend(latencies)
+
+                if all_latencies:
+                    avg_latency = sum(all_latencies) / len(all_latencies)
+                    report.append(f"📡 Avg Network Latency: {avg_latency*1000:.1f}ms")
+
+            # File operation summary
+            if self.file_operation_times:
+                total_chunk_ops = sum(len(times) for times in self.file_operation_times.values())
+                report.append(f"🧩 Chunks Processed: {total_chunk_ops}")
+
+                # Calculate average chunk processing time
+                all_chunk_times = []
+                for times in self.file_operation_times.values():
+                    all_chunk_times.extend(times)
+
+                if all_chunk_times:
+                    avg_chunk_time = sum(all_chunk_times) / len(all_chunk_times)
+                    report.append(f"⚙️  Avg Chunk Time: {avg_chunk_time:.3f}s")
+
         return "\n".join(report)
     
     def cleanup_old_measurements(self, max_age_seconds: float = 3600):

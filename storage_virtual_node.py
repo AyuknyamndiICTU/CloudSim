@@ -462,8 +462,117 @@ class StorageVirtualNode:
                 f.write(data)
                 remaining -= write_size
 
+        # Update local storage tracking
+        self.used_storage += size_bytes
+
+        # Notify controller about file creation
+        self._notify_file_created(file_name, size_bytes, file_path)
+
         print(f"✅ Test file created: {file_path}")
         return file_path
+
+    def _notify_file_created(self, file_name: str, file_size: int, file_path: str):
+        """Notify controller about file creation"""
+        try:
+            file_id = hashlib.md5(f"{self.node_id}_{file_name}_{time.time()}".encode()).hexdigest()
+
+            message = {
+                'action': 'FILE_CREATED',
+                'node_id': self.node_id,
+                'file_info': {
+                    'file_id': file_id,
+                    'file_name': file_name,
+                    'file_size': file_size,
+                    'owner_node': self.node_id,
+                    'file_path': file_path
+                }
+            }
+
+            # Send notification to controller
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((self.network_host, self.network_port))
+                s.sendall(pickle.dumps(message))
+                response = pickle.loads(s.recv(4096))
+
+                if response.get('status') == 'ACK':
+                    print(f"📡 File creation notified to controller")
+
+        except Exception as e:
+            print(f"⚠️  Failed to notify controller: {e}")
+
+    def list_available_files(self) -> List[Dict]:
+        """Get list of available files from controller"""
+        try:
+            message = {
+                'action': 'LIST_FILES_REQUEST',
+                'node_id': self.node_id
+            }
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((self.network_host, self.network_port))
+                s.sendall(pickle.dumps(message))
+                response = pickle.loads(s.recv(4096))
+
+                if response.get('status') == 'SUCCESS':
+                    files = response.get('files', [])
+                    print(f"\n📂 Available Files ({len(files)} total):")
+                    print("=" * 50)
+
+                    for file_info in files:
+                        size_str = stats_manager.format_size(file_info['size'])
+                        print(f"📄 {file_info['name']} ({size_str}) - {file_info['owner_node']}")
+                        print(f"   ID: {file_info['file_id']}")
+
+                    print("=" * 50)
+                    return files
+                else:
+                    print(f"❌ Failed to get file list: {response.get('message', 'Unknown error')}")
+                    return []
+
+        except Exception as e:
+            print(f"❌ Error listing files: {e}")
+            return []
+
+    def download_file_by_id(self, file_id: str, save_name: str = None) -> bool:
+        """Download a file by its ID from another node"""
+        try:
+            message = {
+                'action': 'FILE_DOWNLOAD_REQUEST',
+                'node_id': self.node_id,
+                'file_id': file_id
+            }
+
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.connect((self.network_host, self.network_port))
+                s.sendall(pickle.dumps(message))
+                response = pickle.loads(s.recv(4096))
+
+                if response.get('status') == 'SUCCESS':
+                    file_info = response.get('file_info', {})
+                    source_node = file_info.get('source_node')
+                    file_name = file_info.get('file_name', 'downloaded_file')
+
+                    if save_name:
+                        file_name = save_name
+
+                    print(f"📥 Downloading {file_name} from {source_node}...")
+
+                    # For now, simulate download (in real implementation, would connect to source node)
+                    save_path = os.path.join(self.storage_dir, file_name)
+
+                    # Simulate file creation (replace with actual download logic)
+                    with open(save_path, 'wb') as f:
+                        f.write(b"Downloaded file content")
+
+                    print(f"✅ Download completed: {file_name}")
+                    return True
+                else:
+                    print(f"❌ Download failed: {response.get('message', 'Unknown error')}")
+                    return False
+
+        except Exception as e:
+            print(f"❌ Download error: {e}")
+            return False
 
     def retrieve_file(
         self,

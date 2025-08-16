@@ -214,6 +214,10 @@ class NetworkController(threading.Thread):
         self.heartbeat_timeout = 5
         self.transfer_operations = defaultdict(dict)
 
+        # File management system
+        self.available_files = {}  # file_id -> {name, size, owner_node, created_time}
+        self.node_files = defaultdict(list)  # node_id -> [file_ids]
+
         # gRPC server for file transfers
         self.grpc_server = None
         self._start_grpc_server()
@@ -279,7 +283,7 @@ class NetworkController(threading.Thread):
                 if message['action'] == 'REGISTER':
                     node_id = message['node_id']
                     if node_id not in self.nodes:
-                        print(f"[Network] Node {node_id} registered (came ONLINE)")
+                        print(f"🔗 {node_id} connected")
                     self.nodes[node_id] = {
                         'host': message['host'],
                         'port': message['port'],
@@ -293,7 +297,7 @@ class NetworkController(threading.Thread):
                     node_id = message['node_id']
                     if node_id in self.nodes:
                         if self.nodes[node_id]['status'] != 'active':
-                            print(f"[Network] Node {node_id} is now ACTIVE")
+                            print(f"✅ {node_id} online")
                         self.nodes[node_id]['status'] = 'active'
                         self.nodes[node_id]['last_seen'] = time.time()
                         conn.sendall(pickle.dumps({'status': 'ACK'}))
@@ -302,18 +306,10 @@ class NetworkController(threading.Thread):
                     node_id = message['node_id']
                     if node_id in self.nodes:
                         if self.nodes[node_id]['status'] == 'registered':
-                            print(f"[Network] Node {node_id} is now ACTIVE")
+                            print(f"✅ {node_id} online")
                             self.nodes[node_id]['status'] = 'active'
                         self.nodes[node_id]['last_seen'] = time.time()
                         conn.sendall(pickle.dumps({'status': 'ACK'}))
-
-                        # Print node summary periodically
-                        if hasattr(self, '_last_summary_time'):
-                            if time.time() - self._last_summary_time > 30:  # Every 30 seconds
-                                self._print_node_summary(node_id)
-                                self._last_summary_time = time.time()
-                        else:
-                            self._last_summary_time = time.time()
                     else:
                         conn.sendall(pickle.dumps({
                             'status': 'ERROR',
@@ -331,6 +327,18 @@ class NetworkController(threading.Thread):
                     file_id = message.get('file_id')
                     requesting_node = message.get('node_id')
                     response = self._handle_file_download_request(file_id, requesting_node)
+                    conn.sendall(pickle.dumps(response))
+
+                elif message['action'] == 'FILE_CREATED':
+                    # Handle file creation notification
+                    file_info = message.get('file_info', {})
+                    self._handle_file_created(file_info)
+                    conn.sendall(pickle.dumps({'status': 'ACK'}))
+
+                elif message['action'] == 'LIST_FILES_REQUEST':
+                    # Handle request for available files list
+                    requesting_node = message.get('node_id')
+                    response = self._handle_list_files_request(requesting_node)
                     conn.sendall(pickle.dumps(response))
         except Exception as e:
             print(f"[Network] Connection error: {e}")
@@ -430,6 +438,86 @@ class NetworkController(threading.Thread):
                 'message': f'Download request failed: {str(e)}'
             }
 
+    def _handle_file_created(self, file_info: Dict):
+        """Handle file creation notification from node"""
+        try:
+            file_id = file_info.get('file_id', str(uuid.uuid4()))
+            file_name = file_info.get('file_name', 'unknown')
+            file_size = file_info.get('file_size', 0)
+            owner_node = file_info.get('owner_node', 'unknown')
+
+            with self.lock:
+                # Store file information
+                self.available_files[file_id] = {
+                    'name': file_name,
+                    'size': file_size,
+                    'owner_node': owner_node,
+                    'created_time': time.time()
+                }
+
+                # Add to node's file list
+                self.node_files[owner_node].append(file_id)
+
+            # Display file creation notification with emoji
+            size_str = self._format_size(file_size)
+            print(f"📁 {file_name} ({size_str}) created on {owner_node}")
+
+            # Display updated file list
+            self._display_available_files()
+
+        except Exception as e:
+            print(f"❌ Error handling file creation: {e}")
+
+    def _handle_list_files_request(self, requesting_node: str) -> Dict:
+        """Handle request for available files list"""
+        try:
+            with self.lock:
+                files_list = []
+                for file_id, file_info in self.available_files.items():
+                    files_list.append({
+                        'file_id': file_id,
+                        'name': file_info['name'],
+                        'size': file_info['size'],
+                        'owner_node': file_info['owner_node'],
+                        'created_time': file_info['created_time']
+                    })
+
+            return {
+                'status': 'SUCCESS',
+                'files': files_list,
+                'total_files': len(files_list)
+            }
+
+        except Exception as e:
+            return {
+                'status': 'ERROR',
+                'message': f'Failed to list files: {str(e)}'
+            }
+
+    def _display_available_files(self):
+        """Display current available files list"""
+        with self.lock:
+            if not self.available_files:
+                print("📂 No files available")
+                return
+
+            print(f"\n📂 Available Files ({len(self.available_files)} total):")
+            print("=" * 50)
+
+            for file_id, file_info in self.available_files.items():
+                size_str = self._format_size(file_info['size'])
+                print(f"📄 {file_info['name']} ({size_str}) - {file_info['owner_node']}")
+
+            print("=" * 50)
+
+    def _format_size(self, size_bytes: int) -> str:
+        """Format bytes to human readable format"""
+        for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+            if size_bytes < 1024.0:
+                return f"{size_bytes:.2f} {unit}"
+            size_bytes /= 1024.0
+        return f"{size_bytes:.2f} PB"
+
     def _print_node_summary(self, node_id: str):
         """Print node summary with current statistics"""
         if node_id in self.nodes:
@@ -464,10 +552,29 @@ class NetworkController(threading.Thread):
                     
                 if current_time - info['last_seen'] > self.heartbeat_timeout:
                     offline_nodes.append(node_id)
-                    print(f"[Network] Node {node_id} went OFFLINE")
+                    print(f"❌ {node_id} offline")
+
+                    # Remove files owned by offline node
+                    self._remove_node_files(node_id)
                     del self.nodes[node_id]
 
         return offline_nodes
+
+    def _remove_node_files(self, node_id: str):
+        """Remove files owned by offline node"""
+        with self.lock:
+            if node_id in self.node_files:
+                files_to_remove = self.node_files[node_id].copy()
+                for file_id in files_to_remove:
+                    if file_id in self.available_files:
+                        file_name = self.available_files[file_id]['name']
+                        print(f"🗑️  {file_name} removed (owner offline)")
+                        del self.available_files[file_id]
+                del self.node_files[node_id]
+
+                # Display updated file list
+                if self.available_files:
+                    self._display_available_files()
 
     def stop(self):
         self.running = False
