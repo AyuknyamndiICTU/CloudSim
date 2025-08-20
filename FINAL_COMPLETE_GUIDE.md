@@ -1,4 +1,5 @@
 # 🌟 **FINAL COMPLETE GUIDE**
+
 ## **Enhanced Distributed Cloud Storage System**
 
 ### 🎯 **The Ultimate Step-by-Step Usage Guide**
@@ -14,18 +15,20 @@
 | **Test Recent Fixes** | `python test_fixes.py` | 10-15 min |
 | **Performance Testing** | `python performance_benchmark.py` | 10-15 min |
 | **Fault Tolerance** | `python fault_tolerance_test.py` | 15-20 min |
-| **Manual Setup** | See [Manual Setup](#manual-setup) below | 5 min |
+| **Manual Setup** | See [Manual Setup](#-quick-start-manual-setup) below | 5 min |
 
 ---
 
 ## 🚀 **RECOMMENDED: COMPLETE GUIDED DEMO**
 
 ### **Best Way to Experience All Features**
+
 ```bash
 python complete_usage_demo.py
 ```
 
 **What This Does:**
+
 - ✅ **Guided Tour:** Step-by-step walkthrough of ALL features
 - ✅ **Multiple Windows:** Opens controller + interactive nodes automatically
 - ✅ **Hands-On:** You interact with real terminals and menus
@@ -33,6 +36,7 @@ python complete_usage_demo.py
 - ✅ **Educational:** Explains what's happening at each step
 
 **Perfect For:**
+
 - First-time users wanting to see everything
 - Understanding the complete system architecture
 - Learning distributed cloud storage concepts
@@ -45,17 +49,20 @@ python complete_usage_demo.py
 ### **If You Prefer Manual Control**
 
 #### **Step 1: Start Controller**
+
 ```bash
 python clean_controller.py
 ```
 
 #### **Step 2: Start Interactive Node**
+
 ```bash
 python clean_node.py --node-id myNode --cpu 4 --memory 16 --storage 1000 --bandwidth 1000 --interactive
 ```
 
 #### **Step 3: Create and Download Files**
-```
+
+```text
 [myNode] Enter your choice (1-9): 1  # Create file
 [myNode] Enter your choice (1-9): 5  # Download by name
 [myNode] Enter your choice (1-9): 6  # Download multiple files
@@ -68,24 +75,28 @@ python clean_node.py --node-id myNode --cpu 4 --memory 16 --storage 1000 --bandw
 ### **🎯 Three Ways to Download Files**
 
 #### **Method 1: By Index (Original)**
-```
+
+```text
 [node] Enter your choice (1-9): 4
 Enter file index (1-5): 2
 ```
 
 #### **Method 2: By Name (NEW)**
-```
+
+```text
 [node] Enter your choice (1-9): 5
 Enter file name: document.pdf
 ```
 
 #### **Method 3: Multiple Files (NEW)**
-```
+
+```text
 [node] Enter your choice (1-9): 6
 Enter file names (or 'all'): file1.pdf, file2.docx, file3.txt
 ```
 
 ### **🌟 Smart Features**
+
 - **Partial Matching:** Type "doc" to find all files containing "doc"
 - **Case Insensitive:** Works with any capitalization
 - **Multiple Matches:** Interactive selection when multiple files match
@@ -97,7 +108,7 @@ Enter file names (or 'all'): file1.pdf, file2.docx, file3.txt
 
 ## 🎮 **COMPLETE INTERACTIVE MENU**
 
-```
+```text
 🖥️  NODE myNode - ENHANCED INTERACTIVE TERMINAL
 ======================================================================
 1. 📝 Create file                    - Create files with progress tracking
@@ -117,6 +128,7 @@ Enter file names (or 'all'): file1.pdf, file2.docx, file3.txt
 ## 🧪 **TESTING SCENARIOS**
 
 ### **Scenario 1: Basic File Sharing (5 minutes)**
+
 ```bash
 # Terminal 1
 python clean_controller.py
@@ -132,6 +144,7 @@ python clean_node.py --node-id laptopB --cpu 2 --memory 8 --storage 500 --bandwi
 ```
 
 ### **Scenario 2: Multiple File Downloads (10 minutes)**
+
 ```bash
 # Use Scenario 1 setup
 # In serverA: Create multiple files with different names
@@ -140,6 +153,7 @@ python clean_node.py --node-id laptopB --cpu 2 --memory 8 --storage 500 --bandwi
 ```
 
 ### **Scenario 3: Fault Tolerance (15 minutes)**
+
 ```bash
 # Start controller + 3 nodes
 # Create files across nodes
@@ -153,11 +167,13 @@ python clean_node.py --node-id laptopB --cpu 2 --memory 8 --storage 500 --bandwi
 ## 📊 **SYSTEM ARCHITECTURE OVERVIEW**
 
 ### **Components**
+
 - **Controller:** Central coordinator managing metadata and replication
 - **Nodes:** Storage units with interactive terminals
 - **Communication:** TCP socket-based messaging with JSON
 
 ### **Key Features**
+
 - **Resource Management:** Mandatory CPU, RAM, Storage, Bandwidth specs
 - **Fault Tolerance:** Automatic failure detection and recovery
 - **Load Balancing:** Smart node selection based on multiple criteria
@@ -171,6 +187,7 @@ python clean_node.py --node-id laptopB --cpu 2 --memory 8 --storage 500 --bandwi
 ### **Common Issues**
 
 #### **"Controller won't start"**
+
 ```bash
 # Check if port 5000 is in use
 netstat -an | grep 5000
@@ -178,17 +195,20 @@ netstat -an | grep 5000
 ```
 
 #### **"Node registration failed"**
+
 ```bash
 # Ensure all required parameters are provided
 python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwidth 1000
 ```
 
 #### **"File not found for download"**
+
 - Use option 3 to refresh file list
 - Check exact filename spelling
 - Try partial name matching
 
 #### **"Insufficient storage"**
+
 - Check available space with option 7
 - Delete files or increase storage capacity
 
@@ -197,12 +217,14 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 ## 📈 **PERFORMANCE METRICS**
 
 ### **Benchmark Results**
+
 - **Throughput:** 1,097.4 Mbps average
 - **Latency:** 121.5ms average for operations
 - **Scalability:** Up to 1,696 Mbps with 5 nodes
 - **Efficiency:** 80-124% depending on file size
 
 ### **Resource Utilization**
+
 - **Storage:** 5.8 TB total distributed capacity
 - **Processing:** 24 CPU cores aggregate
 - **Bandwidth:** 2.35 Gbps total network capacity
@@ -212,6 +234,7 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 ## 🎯 **DISTRIBUTED CLOUD CONCEPTS IMPLEMENTED**
 
 ### **Enterprise Features**
+
 - ✅ **Horizontal Scaling:** Add nodes dynamically
 - ✅ **Fault Tolerance:** Automatic failure detection and recovery
 - ✅ **Load Balancing:** Multi-criteria node selection
@@ -220,6 +243,7 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 - ✅ **Resource Management:** CPU, RAM, Storage, Bandwidth awareness
 
 ### **Advanced Concepts**
+
 - ✅ **Eventual Consistency:** Files eventually replicated across nodes
 - ✅ **CAP Theorem:** Chooses availability and partition tolerance
 - ✅ **Distributed Coordination:** Controller manages all operations
@@ -231,10 +255,12 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 ## 📚 **FILE REFERENCE**
 
 ### **Core System Files**
+
 - `clean_controller.py` - Enhanced controller with advanced features
 - `clean_node.py` - Enhanced node with new download capabilities
 
 ### **Demo and Testing Files**
+
 - `complete_usage_demo.py` - **RECOMMENDED:** Complete guided demonstration
 - `enhanced_download_demo.py` - Focus on new download features
 - `phase3_demo.py` - Multi-node system demonstration
@@ -242,6 +268,7 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 - `fault_tolerance_test.py` - Fault tolerance and recovery testing
 
 ### **Documentation Files**
+
 - `FINAL_COMPLETE_GUIDE.md` - This comprehensive guide
 - `ENHANCED_DOWNLOAD_GUIDE.md` - Detailed download features guide
 - `README.md` - Original project documentation
@@ -251,6 +278,7 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 ## 🎉 **CONCLUSION**
 
 ### **What You've Built**
+
 You now have a **complete, enterprise-grade distributed cloud storage system** that demonstrates:
 
 - **🌐 Distributed Architecture:** Multi-node system with automatic coordination
@@ -261,12 +289,14 @@ You now have a **complete, enterprise-grade distributed cloud storage system** t
 - **⚖️ Load Balancing:** Intelligent distribution across heterogeneous nodes
 
 ### **Perfect For**
+
 - **Learning:** Understanding distributed systems concepts
 - **Teaching:** Demonstrating cloud storage architecture
 - **Testing:** Exploring fault tolerance and performance
 - **Development:** Foundation for more advanced features
 
 ### **Next Steps**
+
 - **Explore:** Use the interactive terminals to test edge cases
 - **Extend:** Add new features like encryption or web interface
 - **Scale:** Test with more nodes and larger files
@@ -277,6 +307,7 @@ You now have a **complete, enterprise-grade distributed cloud storage system** t
 ## 🚀 **GET STARTED NOW**
 
 ### **Recommended First Steps:**
+
 1. **Run the complete demo:** `python complete_usage_demo.py`
 2. **Follow the guided tour** (15-20 minutes)
 3. **Experiment with interactive terminals**
@@ -286,6 +317,7 @@ You now have a **complete, enterprise-grade distributed cloud storage system** t
 ### **🌟 You're Ready to Explore the Future of Distributed Storage!**
 
 **The system implements ALL the concepts you requested:**
+
 - ✅ Multi-node distributed architecture
 - ✅ Enhanced download by name and multiple files
 - ✅ Resource management with mandatory specifications

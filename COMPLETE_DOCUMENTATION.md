@@ -22,11 +22,11 @@ A comprehensive, production-ready distributed cloud storage system that implemen
 
 | Section | Description |
 |---------|-------------|
-| [🚀 Quick Start](#quick-start) | Get running in 5 minutes |
-| [📥 Download Features](#enhanced-download-features) | New intuitive download methods |
-| [🎮 Interactive Guide](#interactive-commands) | Complete command reference |
-| [🧪 Testing](#testing--demos) | Comprehensive testing suites |
-| [🔧 Troubleshooting](#troubleshooting) | Common issues and solutions |
+| [🚀 Quick Start](#-quick-start) | Get running in 5 minutes |
+| [📥 Download Features](#-enhanced-download-features) | New intuitive download methods |
+| [🎮 Interactive Guide](#-interactive-commands) | Complete command reference |
+| [🧪 Testing](#-testing--demos) | Comprehensive testing suites |
+| [🔧 Troubleshooting](#-troubleshooting) | Common issues and solutions |
 
 ---
 
@@ -48,7 +48,7 @@ python clean_node.py --node-id nodeA --cpu 4 --memory 16 --storage 1000 --bandwi
 
 In the interactive node terminal:
 
-```
+```text
 [nodeA] Enter your choice (1-9): 1  # Create file
 Enter file name: my_document.pdf
 Enter file size in MB: 25
@@ -118,14 +118,14 @@ Enter file name: my_document.pdf
 
 #### **1. Exact Name Matching**
 
-```
+```text
 [node] Enter your choice (1-9): 5
 Enter file name: project_report.pdf
 ```
 
 #### **2. Partial Name Matching**
 
-```
+```text
 [node] Enter your choice (1-9): 5
 Enter file name: report
 🔍 Multiple files match 'report':
@@ -136,7 +136,7 @@ Enter number to select file (or 'all' for all matches): 1
 
 #### **3. Multiple File Downloads**
 
-```
+```text
 [node] Enter your choice (1-9): 6
 Enter file names (or 'all'): document.pdf, presentation.pptx, data.xlsx
 
@@ -160,7 +160,7 @@ Proceed with download? (y/N): y
 
 #### **4. Download All Files**
 
-```
+```text
 [node] Enter your choice (1-9): 6
 Enter file names (or 'all'): all
 📦 Selected all 8 files for download
@@ -172,7 +172,7 @@ Enter file names (or 'all'): all
 
 ### **Complete Menu Reference**
 
-```
+```text
 🖥️  NODE nodeA - ENHANCED INTERACTIVE TERMINAL
 ======================================================================
 1. 📝 Create file                    - Create files with progress tracking
@@ -189,7 +189,7 @@ Enter file names (or 'all'): all
 
 ### **📊 Statistics Display Example**
 
-```
+```text
 📊 Node nodeA Enhanced Statistics
 ------------------------------------------------------------
 🖥️  RESOURCES:
@@ -327,7 +327,7 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 
 #### **❌ File Not Found for Download**
 
-```
+```text
 💡 Solutions:
 1. Use option 3 to refresh file list
 2. Check exact filename spelling
@@ -337,7 +337,7 @@ python clean_node.py --node-id test --cpu 4 --memory 16 --storage 1000 --bandwid
 
 #### **❌ Insufficient Storage**
 
-```
+```text
 💡 Solutions:
 1. Check available space with option 7
 2. Delete local files to free space
@@ -361,7 +361,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 ### **📐 Design Pattern: Master-Slave with P2P Elements**
 
-```
+```text
                     CONTROLLER (Master)
     ┌─────────────────────────────────────────────┐
     │ • Node Registration & Health Monitoring     │
@@ -410,7 +410,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 ### **🔗 File Structure**
 
-```
+```text
 CloudSim/
 ├── clean_controller.py          # Enhanced controller
 ├── clean_node.py               # Enhanced node with new features

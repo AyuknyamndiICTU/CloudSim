@@ -8,12 +8,12 @@ This document records all major issues encountered during development and the co
 
 ## 🚨 **CRITICAL ISSUE #1: Connection Problems During File Creation**
 
-### **📊 Problem Description**
+### **📊 Issue #1: Problem Description**
 
 - **Symptoms**: Connection timeouts during file creation, files not appearing on controller terminal
 - **Error Messages**:
 
-  ```
+  ```text
   ⚠️  Connection issue: timed out
   ❌ Failed to notify controller after 5 attempts
   📁 File created locally but not registered with controller
@@ -22,7 +22,7 @@ This document records all major issues encountered during development and the co
 - **Impact**: Files created successfully on nodes but invisible to other nodes and controller
 - **User Experience**: Frustrating workflow, unreliable file sharing
 
-### **🔍 Root Cause Analysis**
+### **🔍 Issue #1: Root Cause Analysis**
 
 1. **Heartbeat System Conflicts**: Heartbeat sender conflicting with file notification sockets
 2. **Connection Backlog**: Controller accumulating CLOSE_WAIT connections (17+ detected)
@@ -30,7 +30,7 @@ This document records all major issues encountered during development and the co
 4. **Socket Management**: Poor connection cleanup and reuse
 5. **Timing Issues**: Rapid connection attempts causing conflicts
 
-### **✅ Solution Implemented**
+### **✅ Issue #1: Solution Implemented**
 
 #### **1. Improved Heartbeat System**
 
@@ -69,7 +69,7 @@ self._display_available_files()
 sys.stdout.flush()
 ```
 
-### **📈 Results**
+### **📈 Issue #1: Results**
 
 - ✅ **100% Success Rate**: Files now appear immediately on controller
 - ✅ **No More Timeouts**: Connection conflicts eliminated
@@ -80,12 +80,12 @@ sys.stdout.flush()
 
 ## 🚨 **CRITICAL ISSUE #2: Large File Handling Problems**
 
-### **📊 Problem Description**
+### **📊 Issue #2: Problem Description**
 
 - **Symptoms**: System hangs with large files, incorrect progress (showing 100% before completion)
 - **Error Messages**:
 
-  ```
+  ```text
   📈 Progress: 100.0% (but file still creating)
   Memory allocation errors for very large files
   ```
@@ -93,7 +93,7 @@ sys.stdout.flush()
 - **Impact**: Cannot handle files > 100MB efficiently, poor user experience
 - **Limitations**: No support for files approaching 1GB
 
-### **🔍 Root Cause Analysis**
+### **🔍 Issue #2: Root Cause Analysis**
 
 1. **Incorrect Progress Calculation**: Using wrong formula for progress percentage
 2. **Memory Issues**: Loading entire file chunks into memory
@@ -101,7 +101,7 @@ sys.stdout.flush()
 4. **No Size Optimization**: Same chunk size for all file sizes
 5. **Poor Progress Reporting**: No ETA or transfer rate information
 
-### **✅ Solution Implemented**
+### **✅ Issue #2: Solution Implemented**
 
 #### **1. Accurate Progress Calculation**
 
@@ -157,7 +157,7 @@ if size_mb > 10:
 print(f"📈 Progress: {progress:.1f}% ({written_mb:.2f}/{total_mb:.2f} MB) - {rate:.1f} MB/s - ETA: {eta:.1f}s")
 ```
 
-### **📈 Results**
+### **📈 Issue #2: Results**
 
 - ✅ **1000MB Support**: Now handles files up to 1GB efficiently
 - ✅ **Accurate Progress**: Real-time progress with ETA and transfer rates
@@ -169,20 +169,20 @@ print(f"📈 Progress: {progress:.1f}% ({written_mb:.2f}/{total_mb:.2f} MB) - {r
 
 ## 🚨 **ISSUE #3: Verbose Statistics Display**
 
-### **📊 Problem Description**
+### **📊 Issue #3: Problem Description**
 
 - **Symptoms**: Too much technical information cluttering the display
 - **Impact**: Poor user experience, difficult to find relevant information
 - **User Feedback**: "Too verbose", "Hard to read", "Information overload"
 
-### **🔍 Root Cause Analysis**
+### **🔍 Issue #3: Root Cause Analysis**
 
 1. **Over-Engineering**: Showing every internal operation detail
 2. **Technical Focus**: Designed for developers, not end users
 3. **Poor Formatting**: No clear separation of important vs. detailed info
 4. **Lack of Prioritization**: All information treated equally
 
-### **✅ Solution Implemented**
+### **✅ Issue #3: Solution Implemented**
 
 #### **1. Essential Metrics Only**
 
@@ -215,7 +215,7 @@ print(f"✅ {node_id} online")
 - Maintained detailed transfer completion reports
 - Kept visual progress bars and storage tracking
 
-### **📈 Results**
+### **📈 Issue #3: Results**
 
 - ✅ **Clean Interface**: Essential information only
 - ✅ **Better UX**: Emoji-rich, easy to read status updates
@@ -226,13 +226,13 @@ print(f"✅ {node_id} online")
 
 ## 🚨 **ISSUE #4: Interactive Node Terminal Implementation**
 
-### **📊 Problem Description**
+### **📊 Issue #4: Problem Description**
 
 - **Need**: Users wanted file operations directly from node terminals
 - **Challenge**: Implementing interactive menus without breaking existing functionality
 - **Complexity**: Thread management, input handling, menu systems
 
-### **✅ Solution Implemented**
+### **✅ Issue #4: Solution Implemented**
 
 #### **1. Built-in Interactive Terminals**
 
@@ -259,7 +259,7 @@ if self.interactive_mode:
 - Non-blocking file operations
 - Proper cleanup and shutdown
 
-### **📈 Results**
+### **📈 Issue #4: Results**
 
 - ✅ **No Separate Client**: Everything built into nodes
 - ✅ **Full Functionality**: All file operations available

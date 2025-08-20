@@ -75,7 +75,8 @@ python clean_node.py --node-id laptopB --cpu 2 --memory 8 --storage 500 --bandwi
 #### **Step 2: Create Files on ServerA**
 
 In the serverA terminal:
-```
+
+```text
 [serverA] Enter your choice (1-9): 1
 Enter file name: project_report.pdf
 Enter file size in MB: 25
@@ -92,14 +93,16 @@ Enter file size in MB: 100
 #### **Step 3: Download by Name on LaptopB**
 
 In the laptopB terminal:
-```
+
+```text
 [laptopB] Enter your choice (1-9): 3  # List available files
 [laptopB] Enter your choice (1-9): 5  # Download by name
 Enter file name: project_report.pdf
 ```
 
 **Expected Output:**
-```
+
+```text
 🔍 Searching for 'project_report.pdf'...
 📥 Found: project_report.pdf (25.0 MB)
 📥 Requesting download for file abc123...
@@ -115,7 +118,7 @@ Enter file name: project_report.pdf
 
 #### **Step 1: List Available Files**
 
-```
+```text
 [laptopB] Enter your choice (1-9): 3
 
 📂 NETWORK FILES AVAILABLE (3 total)
@@ -134,7 +137,7 @@ Enter file name: project_report.pdf
 
 #### **Step 2: Download Multiple Files**
 
-```
+```text
 [laptopB] Enter your choice (1-9): 6
 
 📦 Download Multiple Files to laptopB
@@ -154,7 +157,8 @@ Enter file names (or 'all'): meeting_notes.docx, database_backup.sql
 ```
 
 **Expected Output:**
-```
+
+```text
 📦 Selected 2 files for download
 
 📥 MULTIPLE FILE DOWNLOAD
@@ -192,11 +196,13 @@ Proceed with download? (y/N): y
 
 ### **Partial Name Matching**
 
-```
+```text
 Enter file name: report
 ```
+
 **Output:**
-```
+
+```text
 🔍 Multiple files match 'report':
    1. project_report.pdf (25.0 MB) - serverA
    2. monthly_report.xlsx (15.0 MB) - serverA
@@ -207,20 +213,20 @@ Enter number to select file (or 'all' for all matches): 1
 
 ### **Download All Files**
 
-```
+```text
 Enter file names (or 'all'): all
 📦 Selected all 3 files for download
 ```
 
 ### **Storage Validation**
 
-```
+```text
 ❌ Insufficient storage. Available: 45.5 MB, Required: 130.0 MB
 ```
 
 ### **Duplicate File Handling**
 
-```
+```text
 ⚠️  File project_report.pdf already exists locally
 Overwrite? (y/n): y
 ```
@@ -231,7 +237,7 @@ Overwrite? (y/n): y
 
 ### **OLD METHOD (Index-based)**
 
-```
+```text
 [node] Enter your choice (1-7): 3  # List files
 [node] Enter your choice (1-7): 4  # Download by index
 Enter file index (1-5): 3          # Remember the number
@@ -246,7 +252,7 @@ Enter file index (1-5): 3          # Remember the number
 
 ### **NEW METHOD (Name-based)**
 
-```
+```text
 [node] Enter your choice (1-9): 5  # Download by name
 Enter file name: project_report.pdf
 ```
@@ -266,7 +272,7 @@ Enter file name: project_report.pdf
 
 ### **Updated Menu Options**
 
-```
+```text
 🖥️  NODE nodeA - ENHANCED INTERACTIVE TERMINAL
 ======================================================================
 1. 📝 Create file
@@ -297,33 +303,37 @@ Enter file name: project_report.pdf
 
 #### **Issue: "File not found"**
 
-```
+```text
 ❌ File 'document.pdf' not found in network
 💡 Use list_available_files() to see available files
 ```
+
 **Solution:** Check the exact filename with option 3
 
 #### **Issue: "No available files"**
 
-```
+```text
 ❌ No available files. Run list_available_files() first.
 ```
+
 **Solution:** Use option 3 to refresh the file list
 
 #### **Issue: "Insufficient storage"**
 
-```
+```text
 ❌ Insufficient storage. Available: 45.5 MB, Required: 130.0 MB
 ```
+
 **Solution:** Free up space or select fewer files
 
 #### **Issue: Multiple matches**
 
-```
+```text
 🔍 Multiple files match 'doc':
    1. document.pdf (25.0 MB) - serverA
    2. documentation.txt (5.0 MB) - serverB
 ```
+
 **Solution:** Select the specific file number or use exact filename
 
 ---
@@ -331,6 +341,7 @@ Enter file name: project_report.pdf
 ## 🚀 **DEMO SCRIPT**
 
 Run the enhanced download demo:
+
 ```bash
 python enhanced_download_demo.py
 ```

@@ -109,7 +109,7 @@ python test_fixes.py
 
 ## 🎮 **INTERACTIVE MENU REFERENCE**
 
-```
+```text
 🖥️  NODE - ENHANCED INTERACTIVE TERMINAL
 ======================================================================
 1. 📝 Create file                    - Create files with progress tracking
